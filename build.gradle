@@ -23,11 +23,7 @@ dependencies {
 
 }
 
-cucumberReports {
-    outputDir = file("build/reports/cucumber")
-    buildId = "0"
-    reports = files("reports/example-report.json")
-}
+
 
 test.finalizedBy jacocoTestReport
 
@@ -67,7 +63,7 @@ publishing {
 }
 
 
-sendMail {
+/*sendMail {
     smtpServer {
         host "smtp.gmail.com"
         port 587
@@ -80,9 +76,5 @@ sendMail {
 
                 body "Hello!! sarah"
     }
-}
+}*/
 
-tasks.named("publish").configure {
-    finalizedBy("postBuiltSucceedToSlack")
-    finalizedBy("sendMail")
-}
