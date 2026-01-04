@@ -1,0 +1,134 @@
+plugins {
+    id 'java'
+    id("jacoco")
+    id("org.sonarqube") version "4.4.1.3373"
+    id 'maven-publish'
+
+
+
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    testImplementation 'io.cucumber:cucumber-java:6.0.0'
+    testImplementation 'io.cucumber:cucumber-junit:6.0.0'
+    testImplementation 'junit:junit:4.12'
+
+}
+
+cucumberReports {
+    outputDir = file("build/reports/cucumber")
+    buildId = "0"
+    reports = files("reports/example-report.json")
+}
+
+test.finalizedBy jacocoTestReport
+
+tasks.named("sonar") {
+    dependsOn(tasks.test)
+}
+
+sonarqube {
+    properties{
+        property "sonar.projectKey" ,  "TP5-OGL"
+        property "sonar.projectName" ,  "TP5-OGL"
+        property "sonar.host.url" ,  "http://localhost:9000"
+        property "sonar.sources" ,  "src/main/java"
+        property "sonar.test" ,  "src/test/java"
+        property "sonar.java.binaries" ,  "build/classes"
+        property "sonar.junit.reportPaths" ,  "build/test-results/test"
+        property "sonar.jacoco.reportPaths" ,  "build/jacoco/test.exec"
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url 'https://mymavenrepo.com/repo/cEmjfkxugPlzLxXg1A2B/'
+            credentials {
+                username 'myMavenRepo'
+                password 'test0005'
+            }
+        }
+    }
+
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+slack {
+    /* publishedPlugin {
+        webHook = "https://hooks.slack.com/services/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"
+        attachment {
+            fallback = "New version successfully published."
+            pretext = "New version successfully published."
+            color = "good"
+            field {
+                title = "Module"
+                value = project.name
+                shortValue = true
+            }
+            field {
+                title = "Version"
+                value = project.version
+                shortValue = true
+            }
+        }
+        attachment {
+            fallback = "Another line on sent together."
+            pretext = "Another line on sent together."
+            color = "good"
+            field {
+                title = "Something"
+                value = "Something text"
+            }
+        }
+    } */
+    builtSucceed {
+        webHook = "https://hooks.slack.com/services/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"
+        attachment {
+            fallback = "Project successfully built."
+            pretext = "Project successfully built."
+            field {
+                title = "Module"
+                value = project.name
+                shortValue = true
+            }
+            field {
+                title = "Version"
+                value = project.version
+                shortValue = true
+            }
+        }
+    }
+}
+
+sendMail {
+    smtpServer {
+        host "smtp.gmail.com"
+        port 587
+        user "beskielimafi04@gmail.com"
+        password "ynbo sdgr ytkb jpgl"
+    }
+    mail {
+        from "beskielimafi04@gmail.com"
+        to "aitkaciazzousarah@gmail.com"
+
+                body "Hello!! sarah"
+    }
+}
+
+tasks.named("publish").configure {
+    finalizedBy("postBuiltSucceedToSlack")
+    finalizedBy("sendMail")
+}
