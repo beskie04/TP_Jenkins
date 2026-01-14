@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'
+        MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'  // ← removed trailing spaces
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECT_NAME = 'TP7-OGL'
         PROJECT_VERSION = '1.0-SNAPSHOT'
@@ -34,7 +34,6 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo '========== Phase Code Analysis =========='
-                echo '========== Phase Code Analysis =========='
                 withSonarQubeEnv('SonarQube') {
                     bat 'gradlew sonar --info'
                 }
@@ -44,7 +43,6 @@ pipeline {
         stage('Code Quality') {
             steps {
                 echo '========== Phase Code Quality =========='
-  echo '========== Phase Code Quality =========='
                 timeout(time: 10, unit: 'MINUTES') {
                     script {
                         def qg = waitForQualityGate()
@@ -95,42 +93,33 @@ pipeline {
             steps {
                 echo '========== Phase Notification =========='
 
-                 mail(
-                     to: 'ms_aitkaciazzou@esi.dz',
-                     subject: "SUCCESS",
-                                       body: """
-                                           <h2> Déploiement réussi !</h2>
-                                           <p><strong>Projet :</strong> ${env.JOB_NAME}</p>
-                                           <p><strong>Build :</strong> #${env.BUILD_NUMBER}</p>
-                                           <p><strong>Status :</strong> SUCCESS</p>
-                                           <p><strong>Date :</strong> ${new Date()}</p>
-                                           <br>
-                                           <p>Le fichier JAR a été déployé avec succès sur mymavenrepo.com</p>
-                                           <p><a href="${env.BUILD_URL}">Voir le build</a></p>
-                                       """,
+                // ✉️ Email notification
+                script {
+                    mail(
+                        to: 'ms_aitkaciazzou@esi.dz',
+                        subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """
+                            <h2>Déploiement réussi !</h2>
+                            <p><strong>Projet :</strong> ${env.JOB_NAME}</p>
+                            <p><strong>Build :</strong> #${env.BUILD_NUMBER}</p>
+                            <p><strong>Status :</strong> SUCCESS</p>
+                            <p><strong>Date :</strong> ${new Date().format('dd/MM/yyyy HH:mm')}</p>
+                            <br>
+                            <p>Le fichier JAR a été déployé avec succès sur mymavenrepo.com</p>
+                            <p><a href="${env.BUILD_URL}">Voir le build</a></p>
+                        """,
+                        mimeType: 'text/html'
+                    )
+                }
 
-                     mimeType: 'text/html'
+                // 📢 Slack notification
+                script {
+                    withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'WEBHOOK_URL')]) {
+                        bat "curl -X POST -H \"Content-Type: application/json\" --data \"{\\\"text\\\": \\\"✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}\\\"}\" %WEBHOOK_URL%"
+                    }
+                }
 
-                 )
-
-
-
-                 stage('Notification') {
-                             steps {
-                                 echo '========== Phase Notification ======='
-                                   echo '========== Phase Notification ======='
-                                 script {
-
-                                     def message = "CC"
-
-                                     withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'WEBHOOK_URL')]) {
-                                         bat "curl -X POST -H "Content-type: application/json" --data "{\"text\":\"${message}\"}" %WEBHOOK_URL%"
-                                     }
-                                 }
-                                 echo 'Notification Slack envoyée avec succès'
-                             }
-                         }
-
+                echo 'Notifications email et Slack envoyées avec succès'
             }
         }
     }
