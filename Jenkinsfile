@@ -12,30 +12,30 @@ pipeline {
         PROJECT_VERSION = '1.0-SNAPSHOT'
     }
 
-    stages {
-        stage('Test') {
-            steps {
-                echo '========== Phase Test =========='
-                bat 'gradlew clean test'
+   stage('Test') {
+       steps {
+           echo '========== Phase Test =========='
+           bat 'gradlew clean test'
 
-                junit 'build/test-results/test/TEST-*.xml'
+           junit 'build/test-results/test/TEST-*.xml'
 
-                publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'build/reports/tests/test',
-                    reportFiles: 'index.html',
-                    reportName: 'Cucumber Test Report'
-                ])
+           publishHTML([
+               allowMissing: false,
+               alwaysLinkToLastBuild: true,
+               keepAll: true,
+               reportDir: 'build/reports/tests/test',
+               reportFiles: 'index.html',
+               reportName: 'Cucumber Test Report'
+           ])
 
-                        cucumber buildStatus: 'UNSTABLE',
-                                reportTitle: 'My report',
-                                fileIncludePattern: 'reports/example-report.json',
-                                trendsLimit: 10,
-
-
-        }
+           cucumber(
+               buildStatus: 'UNSTABLE',
+               reportTitle: 'My report',
+               fileIncludePattern: 'reports/example-report.json',
+               trendsLimit: 10
+           )
+       }
+   }
 
         stage('Code Analysis') {
             steps {
