@@ -118,6 +118,7 @@ pipeline {
                  stage('Notification') {
                              steps {
                                  echo '========== Phase Notification ======='
+                                   echo '========== Phase Notification ======='
                                  script {
 
                                      def message = "CC"
