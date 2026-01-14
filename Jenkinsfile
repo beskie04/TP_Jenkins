@@ -2,11 +2,10 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk17'  // Must match name in Jenkins Global Tools
+        jdk 'jdk17'
     }
 
     environment {
-
         MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECT_NAME = 'TP7-OGL'
@@ -17,7 +16,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo '========== Phase Test =========='
-                sh './gradlew clean test'
+                bat 'gradlew clean test'
 
                 junit 'build/test-results/test/TEST-*.xml'
 
@@ -36,7 +35,7 @@ pipeline {
             steps {
                 echo '========== Phase Code Analysis =========='
                 withSonarQubeEnv('SonarQube') {
-                    sh './gradlew sonar --info'
+                    bat 'gradlew sonar --info'
                 }
             }
         }
@@ -58,7 +57,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo '========== Phase Build =========='
-                sh './gradlew build jar javadoc'
+                bat 'gradlew build jar javadoc'
 
                 archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
                 archiveArtifacts artifacts: 'build/docs/javadoc/**', fingerprint: true
@@ -84,7 +83,7 @@ pipeline {
                         passwordVariable: 'MAVEN_PASSWORD'
                     )
                 ]) {
-                    sh './gradlew publish'
+                    bat 'gradlew publish'
                 }
                 echo "Deployment successful to ${MAVEN_REPO_URL}"
             }
@@ -94,14 +93,12 @@ pipeline {
             steps {
                 echo '========== Phase Notification =========='
 
-                // Email
                 emailext (
                     subject: "[SUCCESS] ${PROJECT_NAME} v${PROJECT_VERSION} deployed",
                     body: "Build #${env.BUILD_NUMBER} succeeded. See: ${env.BUILD_URL}",
                     recipientProviders: [[$class: 'DevelopersRecipientProvider']]
                 )
 
-                // Slack (using credential ID only — no secret in code!)
                 slackSend(
                     channel: '#dev-notifications',
                     color: 'good',
