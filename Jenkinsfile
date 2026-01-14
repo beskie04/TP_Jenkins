@@ -94,9 +94,10 @@ pipeline {
                 echo '========== Phase Notification =========='
 
                 emailext (
+                    to: 'mb_bachferrag@esi.dz',
                     subject: "[SUCCESS] ${PROJECT_NAME} v${PROJECT_VERSION} deployed",
                     body: "Build #${env.BUILD_NUMBER} succeeded. See: ${env.BUILD_URL}",
-                    recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                    mimeType: 'text/html'
                 )
 
                 slackSend(
