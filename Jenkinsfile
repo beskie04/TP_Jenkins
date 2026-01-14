@@ -34,7 +34,7 @@ pipeline {
                                 fileIncludePattern: 'reports/example-report.json',
                                 trendsLimit: 10,
 
-            }
+
         }
 
         stage('Code Analysis') {
