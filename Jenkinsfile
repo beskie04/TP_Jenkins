@@ -94,7 +94,7 @@ pipeline {
                 echo '========== Phase Notification =========='
 
                  mail(
-                     to: 'mb_bachferrag@esi.dz',
+                     to: 'ms_aitkaciazzou@esi.dz',
                      subject: "SUCCESS",
                                        body: """
                                            <h2> Déploiement réussi !</h2>
