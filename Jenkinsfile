@@ -100,7 +100,7 @@ pipeline {
                                            <h2> Déploiement réussi !</h2>
                                            <p><strong>Projet :</strong> ${env.JOB_NAME}</p>
                                            <p><strong>Build :</strong> #${env.BUILD_NUMBER}</p>
-                                           <p><strong>Status :</strong> SUCCESS</p>
+
                                            <p><strong>Date :</strong> ${new Date()}</p>
                                            <br>
                                            <p>Le fichier JAR a été déployé avec succès sur mymavenrepo.com</p>
