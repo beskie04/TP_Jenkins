@@ -34,6 +34,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo '========== Phase Code Analysis =========='
+                echo '========== Phase Code Analysis =========='
                 withSonarQubeEnv('SonarQube') {
                     bat 'gradlew sonar --info'
                 }
