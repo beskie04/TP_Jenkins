@@ -6,36 +6,37 @@ pipeline {
     }
 
     environment {
-        MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'
+        MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'  // removed trailing spaces
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECT_NAME = 'TP7-OGL'
         PROJECT_VERSION = '1.0-SNAPSHOT'
     }
 
-   stage('Test') {
-       steps {
-           echo '========== Phase Test =========='
-           bat 'gradlew clean test'
+    stages {
+        stage('Test') {
+            steps {
+                echo '========== Phase Test =========='
+                bat 'gradlew clean test'
 
-           junit 'build/test-results/test/TEST-*.xml'
+                junit 'build/test-results/test/TEST-*.xml'
 
-           publishHTML([
-               allowMissing: false,
-               alwaysLinkToLastBuild: true,
-               keepAll: true,
-               reportDir: 'build/reports/tests/test',
-               reportFiles: 'index.html',
-               reportName: 'Cucumber Test Report'
-           ])
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'build/reports/tests/test',
+                    reportFiles: 'index.html',
+                    reportName: 'Cucumber Test Report'
+                ])
 
-           cucumber(
-               buildStatus: 'UNSTABLE',
-               reportTitle: 'My report',
-               fileIncludePattern: 'reports/example-report.json',
-               trendsLimit: 10
-           )
-       }
-   }
+                cucumber(
+                    buildStatus: 'UNSTABLE',
+                    reportTitle: 'My report',
+                    fileIncludePattern: 'reports/example-report.json',
+                    trendsLimit: 10
+                )
+            }
+        }
 
         stage('Code Analysis') {
             steps {
@@ -118,7 +119,7 @@ pipeline {
                     )
                 }
 
-
+                // 📢 Slack notification
                 script {
                     withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'WEBHOOK_URL')]) {
                         bat "curl -X POST -H \"Content-Type: application/json\" --data \"{\\\"text\\\": \\\"✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}\\\"}\" %WEBHOOK_URL%"
