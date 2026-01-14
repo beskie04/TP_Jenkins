@@ -115,21 +115,20 @@ pipeline {
 
 
 
-                 // Notification Slack
-                               slackSend (
-                                   baseUrl: 'https://hooks.slack.com/services/',
-                                   tokenCredentialId: 'sslack-webhook-url',
-                                   channel: '#dev-notifications',
-                                   color: 'good',
-                                   message: """
-                                       *Deploiement reussi*
-                                       *Projet* : ${PROJECT_NAME}
-                                       *Version* : ${PROJECT_VERSION}
-                                       *Build* : #${env.BUILD_NUMBER}
-                                       *Branch* : ${env.BRANCH_NAME}
-                                       Lien : ${env.BUILD_URL}
-                                   """
-                               )
+                 stage('Notification') {
+                             steps {
+                                 echo '========== Phase Notification =========='
+                                 script {
+
+                                     def message = "CC"
+
+                                     withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'WEBHOOK_URL')]) {
+                                         bat "curl -X POST -H "Content-type: application/json" --data "{\"text\":\"${message}\"}" %WEBHOOK_URL%"
+                                     }
+                                 }
+                                 echo 'Notification Slack envoyée avec succès'
+                             }
+                         }
 
             }
         }
