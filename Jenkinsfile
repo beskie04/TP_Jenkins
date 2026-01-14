@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'  // ← removed trailing spaces
+        MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECT_NAME = 'TP7-OGL'
         PROJECT_VERSION = '1.0-SNAPSHOT'
@@ -28,6 +28,12 @@ pipeline {
                     reportFiles: 'index.html',
                     reportName: 'Cucumber Test Report'
                 ])
+
+                        cucumber buildStatus: 'UNSTABLE',
+                                reportTitle: 'My report',
+                                fileIncludePattern: 'reports/example-report.json',
+                                trendsLimit: 10,
+
             }
         }
 
