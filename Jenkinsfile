@@ -44,7 +44,7 @@ pipeline {
         stage('Code Quality') {
             steps {
                 echo '========== Phase Code Quality =========='
-
+  echo '========== Phase Code Quality =========='
                 timeout(time: 10, unit: 'MINUTES') {
                     script {
                         def qg = waitForQualityGate()
