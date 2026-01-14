@@ -93,12 +93,23 @@ pipeline {
             steps {
                 echo '========== Phase Notification =========='
 
-                emailext (
-                    to: 'mb_bachferrag@esi.dz',
-                    subject: "[SUCCESS] ${PROJECT_NAME} v${PROJECT_VERSION} deployed",
-                    body: "Build #${env.BUILD_NUMBER} succeeded. See: ${env.BUILD_URL}",
-                    mimeType: 'text/html'
-                )
+              emailext(
+                  to: 'mb_bachferrag@esi.dz',
+                  subject: "[SUCCESS] ${PROJECT_NAME} v${PROJECT_VERSION} deployed",
+                  body: """
+                      <html>
+                      <body>
+                          <h2 style="color:green;">Deployment Successful</h2>
+                          <p><strong>Project:</strong> ${PROJECT_NAME}</p>
+                          <p><strong>Version:</strong> ${PROJECT_VERSION}</p>
+                          <p><strong>Build:</strong> #${env.BUILD_NUMBER}</p>
+                          <p><a href="${env.BUILD_URL}">View Build Details</a></p>
+                          <p><em>Sent by Jenkins CI/CD</em></p>
+                      </body>
+                      </html>
+                  """,
+                  mimeType: 'text/html'
+              )
 
                 // Notification Slack
                 slackSend(
