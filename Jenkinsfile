@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        // These can be set in Jenkins job config or here as safe values
+
         MAVEN_REPO_URL = 'https://mymavenrepo.com/repository/maven-releases/'
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECT_NAME = 'TP7-OGL'
