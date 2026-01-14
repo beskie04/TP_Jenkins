@@ -100,7 +100,7 @@ pipeline {
             steps {
                 echo '========== Phase Notification =========='
 
-                // ✉️ Email notification
+
                 script {
                     mail(
                         to: 'ms_aitkaciazzou@esi.dz',
