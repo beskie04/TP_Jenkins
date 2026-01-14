@@ -93,20 +93,24 @@ pipeline {
             steps {
                 echo '========== Phase Notification =========='
 
-             script {
                  mail(
                      to: 'mb_bachferrag@esi.dz',
-                     subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                     body: """
-             Déploiement réussi !
-             Projet : ${env.JOB_NAME}
-             Build : #${env.BUILD_NUMBER}
-             Status : SUCCESS
-             Date : ${new Date().format('dd/MM/yyyy HH:mm')}
-             Voir le build : ${env.BUILD_URL}
-                     """.stripIndent()
+                     subject: "SUCCESS",
+                                       body: """
+                                           <h2> Déploiement réussi !</h2>
+                                           <p><strong>Projet :</strong> ${env.JOB_NAME}</p>
+                                           <p><strong>Build :</strong> #${env.BUILD_NUMBER}</p>
+                                           <p><strong>Status :</strong> SUCCESS</p>
+                                           <p><strong>Date :</strong> ${new Date()}</p>
+                                           <br>
+                                           <p>Le fichier JAR a été déployé avec succès sur mymavenrepo.com</p>
+                                           <p><a href="${env.BUILD_URL}">Voir le build</a></p>
+                                       """,
+
+                     mimeType: 'text/html'
+
                  )
-             }
+
 
                 // Notification Slack
                 slackSend(
