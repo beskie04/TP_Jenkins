@@ -112,7 +112,7 @@ pipeline {
                     )
                 }
 
-                // 📢 Slack notification
+
                 script {
                     withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'WEBHOOK_URL')]) {
                         bat "curl -X POST -H \"Content-Type: application/json\" --data \"{\\\"text\\\": \\\"✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}\\\"}\" %WEBHOOK_URL%"
