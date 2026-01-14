@@ -100,10 +100,13 @@ pipeline {
                     mimeType: 'text/html'
                 )
 
+                // Notification Slack
                 slackSend(
-                    channel: '#dev-notifications',
-                    color: 'good',
-                    message: ":white_check_mark: SUCCESS: ${PROJECT_NAME} #${env.BUILD_NUMBER} deployed. ${env.BUILD_URL}"
+                    tokenCredentialId: 'slack-webhook-url',
+                     channel: '#dev-notifications',
+                       color: 'good',
+                       message: "*SUCCESS*: Job ${env.JOB_NAME} #${env.BUILD_NUMBER} passed."
+
                 )
             }
         }
