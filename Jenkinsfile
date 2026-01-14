@@ -114,14 +114,23 @@ pipeline {
                  )
 
 
-                // Notification Slack
-                slackSend(
-                    tokenCredentialId: 'slack-webhook-url',
-                     channel: '#dev-notifications',
-                       color: 'good',
-                       message: "*SUCCESS*: Job ${env.JOB_NAME} #${env.BUILD_NUMBER} passed."
 
-                )
+                 // Notification Slack
+                               slackSend (
+                                   baseUrl: 'https://hooks.slack.com/services/',
+                                   tokenCredentialId: 'sslack-webhook-url',
+                                   channel: '#dev-notifications',
+                                   color: 'good',
+                                   message: """
+                                       *Deploiement reussi*
+                                       *Projet* : ${PROJECT_NAME}
+                                       *Version* : ${PROJECT_VERSION}
+                                       *Build* : #${env.BUILD_NUMBER}
+                                       *Branch* : ${env.BRANCH_NAME}
+                                       Lien : ${env.BUILD_URL}
+                                   """
+                               )
+
             }
         }
     }
